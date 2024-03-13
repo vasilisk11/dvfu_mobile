@@ -1,5 +1,6 @@
 package com.example.dvfu_mobile.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,16 +20,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TodoCard(title: String, subtitle: String) {
+fun TodoCard(title: String, subtitle: String, onClick: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(Color.White),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }. shadow(8.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column(modifier = Modifier.padding(vertical = 22.dp, horizontal = 19.dp)) {
@@ -69,10 +73,5 @@ fun TodoCard(title: String, subtitle: String) {
     }
 }
 
-@Preview()
-@Composable
-fun GreetingPreview() {
-    TodoCard("Android", "Android eto horosho")
-}
 
 

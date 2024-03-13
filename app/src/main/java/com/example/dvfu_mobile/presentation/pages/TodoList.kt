@@ -21,11 +21,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.dvfu_mobile.domain.entity.TodoEntity
+import com.example.dvfu_mobile.navigation.Screen
 import com.example.dvfu_mobile.presentation.TodoCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoList(){
+fun TodoList(navController: NavController){
+    val todoEntityList = listOf<TodoEntity>(
+        TodoEntity(
+            title = "сходить на пару",
+            subtitle = "Сходить на пару по мобильной разработке"
+        ),
+        TodoEntity(
+            title = "сходить на пару",
+            subtitle = "Сходить на пару по мобильной разработке"
+        ),
+        TodoEntity(
+            title = "сходить на пару",
+            subtitle = "Сходить на пару по мобильной разработке"
+        ),
+        TodoEntity(
+            title = "сходить на пару",
+            subtitle = "Сходить на пару по мобильной разработке"
+        )
+        )
     Scaffold(
         containerColor = MaterialTheme.colorScheme.secondary,
         topBar = {
@@ -76,23 +97,17 @@ fun TodoList(){
                     .padding(top = 22.dp, start = 7.dp, end = 7.dp),
                 verticalArrangement = Arrangement.spacedBy(21.dp)
             ) {
-                TodoCard("Вынести мусор", "Ибо воняет")
+            todoEntityList.forEach {
                 TodoCard(
-                    "Сходить на пару",
-                    "Сходить на пару по мобильной разработке"
-                )
-                TodoCard(
-                    "Сходить на пару",
-                    "Сходить на пару по мобильной разработке"
-                )
-                TodoCard(
-                    "Сходить на пару",
-                    "Сходить на пару по мобильной разработке"
-                )
-                TodoCard(
-                    "Сходить на пару",
-                    "Сходить на пару по мобильной разработке"
-                )
+                    title = it.title,
+                    subtitle = it.subtitle,
+                    onClick = {
+                        navController.navigate(
+                            Screen.TodoScreen.withArgs(
+                                it.title,
+                                it.subtitle
+                            ))})
+            }
             }
         })
 }
