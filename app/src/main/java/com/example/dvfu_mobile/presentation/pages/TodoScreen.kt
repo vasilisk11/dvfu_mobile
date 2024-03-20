@@ -1,6 +1,5 @@
 package com.example.dvfu_mobile.presentation.pages
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,20 +26,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dvfu_mobile.domain.entity.TodoEntity
+import com.example.dvfu_mobile.presentation.pages.view_model.TodoListViewModel
+import com.example.dvfu_mobile.presentation.pages.view_model.TodoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoScreen(title: String? = null, subtitle: String? = null, navController: NavController) {
-    var titleState by remember { mutableStateOf(title ?:"") }
-    var descriptionState by remember { mutableStateOf(subtitle ?:"") }
+fun TodoScreen(
+    id: Int = -1,
+    viewModel: TodoViewModel,
+    sharedViewModel: TodoListViewModel,
+    updateTodo: (Int, String, String) -> Unit,
+    addTodo: (String, String) -> Unit
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.secondary,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults
-                    .smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                    .topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 title = {
-                    if (title != null && subtitle != null) {
+                    if (id != -1) {
                         Text(
                             text = "Edit",
                             style = MaterialTheme.typography.titleLarge.copy(color = Color.White)
@@ -57,32 +63,48 @@ fun TodoScreen(title: String? = null, subtitle: String? = null, navController: N
         content = {
             Column(
                 modifier = Modifier
-                    .padding(paddingValues = it).padding(horizontal = 14.dp)
+                    .padding(paddingValues = it)
+                    .padding(horizontal = 14.dp)
                     .fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(43.dp)
             ) {
                 val localModifier = Modifier.align(Alignment.CenterHorizontally)
-                val textFieldColors = TextFieldDefaults.textFieldColors(
+                val textFieldColors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Black,
                     unfocusedIndicatorColor = Color.Black,
                     cursorColor = Color.Black,
                 )
                 TextField(
-                    value = titleState,
-                    onValueChange = {titleState = it},
+                    value = viewModel.title.value,
+                    onValueChange = {
+                        viewModel.onChangeTitle(it)
+                    },
                     modifier = localModifier,
                     colors = textFieldColors,
                 )
                 TextField(
-                    value = descriptionState,
-                    onValueChange = {descriptionState = it},
+                    value = viewModel.description.value,
+                    onValueChange = {
+                        viewModel.onChangeSubtitle(it)
+                    },
                     modifier = localModifier,
                     colors = textFieldColors,
                 )
-                if (title != null && subtitle != null) {
+                if (id != -1) {
                     Row(modifier = localModifier) {
                         Button(
-                            onClick = {},
-                            Modifier.background(MaterialTheme.colorScheme.primary).width(386.dp)
+                            onClick = {
+                                updateTodo(
+                                    viewModel.id.value,
+
+                                    viewModel.title.value,
+                                    viewModel.description.value
+                                )
+                            },
+                            Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .width(386.dp)
                         ) {
                             Text(
                                 text = "Update",
@@ -91,9 +113,10 @@ fun TodoScreen(title: String? = null, subtitle: String? = null, navController: N
                         }
                         Button(
                             onClick = {},
-                            Modifier.background(MaterialTheme.colorScheme.primary).width(386.dp)
+                            Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .width(386.dp)
                         ) {
-
                             Text(
                                 text = "Cancel",
                                 style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
@@ -102,8 +125,15 @@ fun TodoScreen(title: String? = null, subtitle: String? = null, navController: N
                     }
                 } else {
                     Button(
-                        onClick = {},
-                        modifier = localModifier.background(MaterialTheme.colorScheme.primary).width(386.dp)
+                        onClick = {
+                            addTodo(
+                                viewModel.title.value,
+                                viewModel.description.value
+                            )
+                        },
+                        modifier = localModifier
+                            .background(MaterialTheme.colorScheme.primary)
+                            .width(386.dp)
                     ) {
                         Text(
                             text = "ADD",
